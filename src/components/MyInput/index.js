@@ -7,6 +7,7 @@ import { TextInput } from 'react-native-gesture-handler';
 
 export default function MyInput({
   onFocus,
+  ref,
   label,
   icon = true,
   maxLength,
@@ -17,6 +18,8 @@ export default function MyInput({
   secureTextEntry,
   styleInput,
   placeholder,
+  editable,
+  onBlur,
   autoFocus,
   multiline,
   label2,
@@ -53,6 +56,9 @@ export default function MyInput({
         position: 'relative'
       }}>
         <TextInput
+          editable={editable}
+          ref={ref}
+          onBlur={onBlur}
           maxLength={maxLength}
           multiline={multiline}
           autoFocus={autoFocus}
@@ -72,7 +78,7 @@ export default function MyInput({
             paddingLeft: 10,
             color: colors.black,
             fontSize: 12,
-            fontFamily: fonts.primary[400],
+            fontFamily: fonts.secondary[400],
             ...styleInput,
           }}
         />

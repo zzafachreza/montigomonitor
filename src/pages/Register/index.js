@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -18,17 +18,19 @@ import { MyInput, MyGap, MyButton, MyPicker } from '../../components';
 import axios from 'axios';
 import { showMessage } from 'react-native-flash-message';
 import LottieView from 'lottie-react-native';
-import { urlAPI } from '../../utils/localStorage';
+import { api_token, urlAPI } from '../../utils/localStorage';
 import { Icon } from 'react-native-elements';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import moment from 'moment'
 
 export default function Register({ navigation }) {
+
+  const inputRef = useRef();
   const windowWidth = Dimensions.get('window').width;
   const windowHeight = Dimensions.get('window').height;
-  const [open, setOpen] = useState(false);
-  const [kota, setKota] = useState([]);
-  const [show, setShow] = useState(true);
+  const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [valid, setValid] = useState(false);
+  const [buka, setbuka] = useState(true);
   const [isEnabled, setIsEnabled] = useState(false);
   const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
@@ -48,60 +50,55 @@ export default function Register({ navigation }) {
   };
 
   const [data, setData] = useState({
+    api_token: api_token,
     nama_lengkap: '',
-    nip: '',
-    email: '',
     password: '',
+    departement: '',
+    barcode: '',
+    tanggal_lahir: new Date(),
+    tanggal_lahirshow: '',
+    email: '',
+    tanggal_lahirset: new Date(),
     telepon: '',
-    kota: ''
+
   });
 
   const simpan = () => {
-    if (
-      data.nama_lengkap.length === 0 &&
-      data.password.length === 0 &&
-      data.telepon.length === 0
-    ) {
+
+    if (data.nama_lengkap.length === 0) {
       showMessage({
-        message: 'Maaf Semua Field Harus Di isi !',
-      });
-    } else if (data.nama_lengkap.length === 0) {
-      showMessage({
-        message: 'Maaf Nama Lengkap masih kosong !',
-      });
-    } else if (data.telepon.length === 0) {
-      showMessage({
-        message: 'Maaf Telepon masih kosong !',
+        message: 'Name must not be empty',
       });
     } else if (data.password.length === 0) {
       showMessage({
-        message: 'Maaf Password masih kosong !',
+        message: 'Password must not be empty',
+      });
+    } else if (data.telepon.length === 0) {
+      showMessage({
+        message: 'Phone Number must not be empty',
       });
     } else {
       setLoading(true);
       console.log(data);
       axios
-        .post(urlAPI + '/register.php', data)
+        .post(urlAPI + 'register', data)
         .then(res => {
           console.warn(res.data);
-          let err = res.data.split('#');
 
-          // console.log(err[0]);
-          if (err[0] == 50) {
-            setTimeout(() => {
-              setLoading(false);
-              showMessage({
-                message: err[1],
-                type: 'danger',
-              });
-            }, 1200);
+          if (res.data.status == 404) {
+            setLoading(false);
+            showMessage({
+              message: res.data.message,
+              type: 'danger',
+            });
           } else {
-            setTimeout(() => {
-              navigation.replace('Success', {
-                messege: res.data,
-              });
-            }, 1200);
+            setLoading(false);
+            navigation.replace('Success', {
+              messege: res.data.message,
+            });
           }
+
+
         });
     }
   };
@@ -112,24 +109,11 @@ export default function Register({ navigation }) {
   return (
     <SafeAreaView style={{
       flex: 1,
-
+      padding: 10,
+      backgroundColor: colors.white,
     }}>
 
       <ScrollView showsVerticalScrollIndicator={false} style={styles.page}>
-        <View style={{
-          padding: 20,
-          justifyContent: 'center',
-          alignItems: 'center',
-
-        }}>
-          <Image
-            source={require('../../assets/logo.png')}
-            style={{
-              width: 100,
-              height: 100,
-            }}
-          />
-        </View>
 
 
 
@@ -138,8 +122,9 @@ export default function Register({ navigation }) {
         }}>
           <MyGap jarak={10} />
           <MyInput
-            label="Nama Lengkap"
+            label="Name"
             iconname="person"
+            placeholder="Enter your name"
             value={data.nama_lengkap}
             onChangeText={value =>
               setData({
@@ -154,32 +139,6 @@ export default function Register({ navigation }) {
 
 
 
-          <MyGap jarak={10} />
-          <MyInput
-            label="Telepon"
-            iconname="call"
-            keyboardType="phone-pad"
-            value={data.telepon}
-            onChangeText={value =>
-              setData({
-                ...data,
-                telepon: value,
-              })
-            }
-          />
-
-          <MyGap jarak={10} />
-          <MyInput
-            label="Alamat"
-            iconname="map"
-            value={data.alamat}
-            onChangeText={value =>
-              setData({
-                ...data,
-                alamat: value,
-              })
-            }
-          />
 
 
 
@@ -188,7 +147,8 @@ export default function Register({ navigation }) {
           <MyInput
             label="Password"
             iconname="key"
-            secureTextEntry={show}
+            placeholder="Enter your password"
+            secureTextEntry={buka}
             value={data.password}
             onChangeText={value =>
               setData({
@@ -198,23 +158,139 @@ export default function Register({ navigation }) {
             }
           />
 
-          {!show && <TouchableOpacity onPress={() => {
-            setShow(true)
-          }} style={{
-            paddingHorizontal: 5,
-            paddingVertical: 10,
-            justifyContent: 'flex-end',
-            alignItems: 'flex-end',
+          <MyGap jarak={10} />
+          <MyInput
+            label="Departement"
+            placeholder="Enter departement"
+            iconname="list"
+            value={data.departement}
+            onChangeText={value =>
+              setData({
+                ...data,
+                departement: value,
+              })
+            }
+          />
+
+
+          <MyGap jarak={10} />
+          <MyInput
+            label="Barcode"
+            iconname="barcode"
+            placeholder="Enter your barcode"
+            value={data.barcode}
+            onChangeText={value =>
+              setData({
+                ...data,
+                barcode: value,
+              })
+            }
+          />
+
+          <MyGap jarak={10} />
+
+          <View style={{
             flexDirection: 'row'
           }}>
-            <Icon size={windowWidth / 25} color={colors.textPrimary} type='ionicon' name='eye-off-outline' />
-            <Text style={{
-              left: 5,
-              fontFamily: fonts.secondary[600],
-              fontSize: windowWidth / 30,
-              color: colors.textPrimary,
-            }}>Hide Password</Text>
-          </TouchableOpacity>}
+            <View style={{
+              flex: 1,
+            }}>
+              <MyInput
+                editable={false}
+                value={data.tanggal_lahirshow}
+                // onFocus={() => setShow(true)}
+                // onBlur={() => setShow(false)}
+                placeholder="Enter your birthday"
+                label="Birthday"
+                iconname="calendar"
+                onChangeText={value =>
+                  setData({
+                    ...data,
+                    tanggal_lahir: value,
+                  })
+                }
+              />
+            </View>
+            <View style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              paddingTop: 25,
+            }}>
+              <TouchableOpacity onPress={() => setShow(true)} style={{
+                justifyContent: 'center',
+                backgroundColor: colors.primary,
+                height: 50,
+                width: 50,
+                borderRadius: 10,
+                marginLeft: 10,
+              }}>
+                <Icon type='ionicon' name='calendar' color={colors.white} />
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          {show && <DateTimePicker
+            testID="dateTimePicker"
+            value={data.tanggal_lahirset}
+            mode="date"
+
+            onChange={(event, selectedDate) => {
+              moment.locale('fr');
+              setShow(false)
+              console.log(event.type)
+              console.log(moment(event.nativeEvent.timestamp).format('YYYY-MM-DD'));
+
+              if (event.type == "set") {
+                setData({
+                  ...data,
+                  tanggal_lahir: moment(event.nativeEvent.timestamp).format('YYYY-MM-DD'),
+                  tanggal_lahirset: event.nativeEvent.timestamp,
+                  tanggal_lahirshow: moment(event.nativeEvent.timestamp).format('LL', 'id')
+                });
+
+              } else {
+                setData({
+                  ...data,
+                  tanggal_lahirset: new Date(),
+                  tanggal_lahir: moment(new Date()).format('YYYY-MM-DD'),
+                  tanggal_lahirshow: moment(new Date()).format('LL', 'id')
+                });
+
+              }
+
+
+            }}
+          />}
+
+          <MyGap jarak={10} />
+          <MyInput
+            ref={inputRef}
+            label="Email"
+            iconname="mail"
+            placeholder="Enter your email"
+            value={data.email}
+            onChangeText={value =>
+              setData({
+                ...data,
+                email: value,
+              })
+            }
+          />
+          <MyGap jarak={10} />
+          <MyInput
+            label="Phone No"
+            iconname="call"
+            keyboardType="phone-pad"
+            placeholder="Enter your phone number"
+            value={data.telepon}
+            onChangeText={value =>
+              setData({
+                ...data,
+                telepon: value,
+              })
+            }
+          />
+
 
 
           <MyGap jarak={20} />

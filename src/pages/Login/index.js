@@ -18,7 +18,7 @@ import { fonts } from '../../utils/fonts';
 import { MyInput, MyGap, MyButton } from '../../components';
 import LottieView from 'lottie-react-native';
 import axios from 'axios';
-import { storeData, getData, urlAPI } from '../../utils/localStorage';
+import { storeData, getData, urlAPI, api_token } from '../../utils/localStorage';
 import { showMessage } from 'react-native-flash-message';
 import { Icon } from 'react-native-elements';
 
@@ -31,7 +31,8 @@ export default function Login({ navigation }) {
   const [show, setShow] = useState(true);
   const [token, setToken] = useState('');
   const [data, setData] = useState({
-    telepon: '',
+    api_token: api_token,
+    email: '',
     password: '',
   });
 
@@ -41,24 +42,24 @@ export default function Login({ navigation }) {
       setToken(res.token);
     });
 
-    const backAction = () => {
-      Alert.alert("TMP Mart", "Apakah kamu yakin akan keluar aplikasi ?", [
-        {
-          text: "Cancel",
-          onPress: () => null,
-          style: "cancel"
-        },
-        { text: "YES", onPress: () => BackHandler.exitApp() }
-      ]);
-      return true;
-    };
+    // const backAction = () => {
+    //   Alert.alert("Montigo Monitor", "Apakah kamu yakin akan keluar aplikasi ?", [
+    //     {
+    //       text: "Cancel",
+    //       onPress: () => null,
+    //       style: "cancel"
+    //     },
+    //     { text: "YES", onPress: () => BackHandler.exitApp() }
+    //   ]);
+    //   return true;
+    // };
 
-    const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      backAction
-    );
+    // const backHandler = BackHandler.addEventListener(
+    //   "hardwareBackPress",
+    //   backAction
+    // );
 
-    return () => backHandler.remove();
+    // return () => backHandler.remove();
 
 
   }, []);
@@ -67,53 +68,68 @@ export default function Login({ navigation }) {
 
   // login ok
   const masuk = () => {
-    if (data.telepon.length === 0 && data.password.length === 0) {
+    if (data.email.length === 0 && data.password.length === 0) {
       showMessage({
-        message: 'Maaf telepon dan Password masih kosong !',
+        message: 'Email and Password must not be empty !',
       });
-    } else if (data.telepon.length === 0) {
+    } else if (data.email.length === 0) {
       showMessage({
-        message: 'Maaf telepon masih kosong !',
+        message: 'Email must not be empty !',
       });
     } else if (data.password.length === 0) {
       showMessage({
-        message: 'Maaf Password masih kosong !',
+        message: 'Password must not be empty !',
       });
     } else {
       setLoading(true);
       console.log(data);
-      setTimeout(() => {
-        axios
-          .post(urlAPI + '/login.php', data)
-          .then(res => {
-            console.log(res.data);
-            setLoading(false);
-            if (res.data.kode == 50) {
-              showMessage({
-                type: 'danger',
-                message: res.data.msg,
-              });
-            } else {
-              storeData('user', res.data);
-              axios
-                .post(urlAPI + '/update_token.php', {
-                  id_member: res.data.id,
-                  token: token,
-                })
-                .then(res => {
-                  console.log('update token', res);
-                });
-
-              navigation.replace('MainApp');
-            }
+      axios.post(urlAPI + 'login', data).then(res => {
+        console.log(res.data);
+        setLoading(false);
+        if (res.data.status == 404) {
+          showMessage({
+            type: 'danger',
+            message: res.data.message,
           });
-      }, 1200);
+        } else {
+          storeData('user', res.data.data);
+          navigation.replace('MainApp');
+        }
+      })
+
+      // axios
+      //   .post(urlAPI + 'login.php', data)
+      //   .then(res => {
+      //     console.log(res.data);
+      //       setLoading(false);
+      //       if (res.data.kode == 50) {
+      //         showMessage({
+      //           type: 'danger',
+      //           message: res.data.msg,
+      //         });
+      //       } else {
+      //         storeData('user', res.data);
+      //         axios
+      //           .post(urlAPI + '/update_token.php', {
+      //             id_member: res.data.id,
+      //             token: token,
+      //           })
+      //           .then(res => {
+      //             console.log('update token', res);
+      //           });
+
+      //         navigation.replace('MainApp');
+      //       }
+      //     });
+
+      //   })
     }
   };
   return (
     <SafeAreaView style={{
       flex: 1,
       backgroundColor: colors.white,
+      padding: 10,
     }}>
       <ScrollView
         showsVerticalScrollIndicator={false}
@@ -126,43 +142,34 @@ export default function Login({ navigation }) {
             alignItems: 'center',
           }}>
           <Image
-            source={require('../../assets/logo.png')}
+            source={require('../../assets/logo2.png')}
             style={{
-              width: 200,
-              height: 200,
+              width: windowWidth / 1.3,
+              resizeMode: 'contain'
               // aspectRatio: 1,
             }}
           />
         </View>
         <View style={styles.page}>
-          <Text
-            style={{
-              marginVertical: 20,
-              fontFamily: fonts.secondary[400],
-              fontSize: windowWidth / 25,
-              color: colors.textPrimary,
-              // maxWidth: 230,
-              textAlign: 'center',
-            }}>
-            Silahkan login untuk masuk ke aplikasi
-          </Text>
+
 
           <MyGap jarak={20} />
           <MyInput
-            label="Nomor Telepon"
-            iconname="call"
-            value={data.telepon}
-            keyboardType="phone-pad"
+            label="Email"
+            iconname="mail"
+            placeholder="Enter your email"
+            value={data.email}
             onChangeText={value =>
               setData({
                 ...data,
-                telepon: value,
+                email: value,
               })
             }
           />
 
           <MyGap jarak={20} />
           <MyInput
+            placeholder="Enter your password"
             label="Password"
             iconname="key"
             secureTextEntry={show}
@@ -192,12 +199,12 @@ export default function Login({ navigation }) {
           }}><Text style={{
             fontSize: windowWidth / 28,
             marginTop: 10,
-            fontFamily: fonts.primary[600],
+            fontFamily: fonts.secondary[600],
             textAlign: 'center',
             color: colors.primary
-          }}>Belum memiliki akun ? <Text style={{
+          }}>Don't have an account ? <Text style={{
             color: colors.secondary
-          }}>daftar disini</Text></Text></TouchableOpacity>
+          }}>Sign up here</Text></Text></TouchableOpacity>
         </View>
       </ScrollView>
       {

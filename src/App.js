@@ -14,8 +14,8 @@ export default function App() {
 
   PushNotification.createChannel(
     {
-      channelId: 'tmpmart', // (required)
-      channelName: 'tmpmart', // (required)
+      channelId: 'montigomonitor', // (required)
+      channelName: 'montigomonitor', // (required)
       channelDescription: 'A channel to categorise your notifications', // (optional) default: undefined.
       playSound: true, // (optional) default: true
       soundName: 'default', // (optional) See `soundName` parameter of `localNotification` function
@@ -74,7 +74,7 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      <StatusBar backgroundColor={colors.primary} barStyle="light-content" />
+      <StatusBar backgroundColor={colors.white} barStyle="dark-content" />
       <Router />
       <FlashMessage position="bottom" />
     </NavigationContainer>

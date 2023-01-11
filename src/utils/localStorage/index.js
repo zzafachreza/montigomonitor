@@ -20,4 +20,5 @@ export const getData = async key => {
 };
 
 
-export const urlAPI = 'https://tmpmart.zavalabs.com/api';
+export const urlAPI = 'https://montigo.okeadmin.com/api/';
+export const api_token = 'd4e729bcd8aab6f0a710e8ca3d31524cb5783dd1d63ddbf32fbed278c435605f';

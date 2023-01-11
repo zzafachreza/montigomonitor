@@ -48,11 +48,9 @@ export default function Home({ navigation }) {
 
       // alert(obj.notification.title)
 
-
-
       PushNotification.localNotification({
         /* Android Only Properties */
-        channelId: 'tmpmart', // (required) channelId, if the channel doesn't exist, notification will not trigger.
+        channelId: 'montigomonitor', // (required) channelId, if the channel doesn't exist, notification will not trigger.
         title: obj.notification.title, // (optional)
         message: obj.notification.body, // (required)
       });
@@ -109,42 +107,162 @@ export default function Home({ navigation }) {
   const windowHeight = Dimensions.get('window').height;
   const ratio = 192 / 108;
 
-  const __renderItemKategori = ({ item }) => {
+
+
+  const MYPost = ({ pp, username, img, like, desc }) => {
     return (
-      <TouchableOpacity onPress={() => navigation.navigate('Barang', {
-        key: item.id,
-        id_user: user.id
-      })} style={{
-        backgroundColor: colors.secondary,
-        marginHorizontal: 5,
-        borderRadius: 5,
-        overflow: 'hidden',
-        flex: 0.5,
+      <View style={{
         marginVertical: 5,
-
       }}>
-
         <View style={{
-          justifyContent: 'center',
-          alignItems: 'center',
-
+          flexDirection: 'row',
+          padding: 10,
+          alignItems: 'center'
         }}>
-          <Image style={{
-            width: '100%',
-            height: 80,
+          <View>
+            <Image style={{
+              width: 30,
+              borderRadius: 15,
+              height: 30,
+            }} source={{
+              uri: pp
+            }} />
+          </View>
+          <View style={{
+            paddingLeft: 10,
+            paddingRight: 2,
+          }}>
+            <Text style={{
 
+              fontFamily: fonts.secondary[600]
+            }}>{username}</Text>
+          </View>
+          <View>
+            <Image style={{
+              width: 15,
+              height: 15,
+            }} source={require('../../assets/cek.png')} />
+          </View>
+        </View>
+        <View>
+          <Image style={{
+            width: windowWidth,
+            height: windowWidth / 1.2,
           }} source={{
-            uri: item.image
+            uri: img
           }} />
         </View>
-        <Text style={{
-          textAlign: 'left',
-          padding: 7,
-          color: colors.white,
-          fontFamily: fonts.secondary[600],
-          fontSize: windowWidth / 32,
-        }}>{item.nama_kategori}</Text>
-      </TouchableOpacity>
+        <View style={{
+          flexDirection: 'row',
+          alignItems: 'center'
+        }}>
+          <View style={{
+            height: 50,
+            justifyContent: 'center'
+          }}>
+            <TouchableOpacity style={{
+              padding: 10,
+            }}>
+              <Icon type='ionicon' name='heart-outline' size={windowHeight / 32} colors={colors.black} />
+            </TouchableOpacity>
+          </View>
+          <View style={{
+            height: 50,
+            justifyContent: 'center'
+          }}>
+            <TouchableOpacity style={{
+              padding: 10,
+            }}>
+              <Icon type='ionicon' name='chatbubble-outline' size={windowHeight / 35} colors={colors.black} />
+            </TouchableOpacity>
+          </View>
+          <View style={{
+            height: 50,
+            justifyContent: 'center'
+          }}>
+            <TouchableOpacity style={{
+              padding: 10,
+            }}>
+              <Icon type='ionicon' name='paper-plane-outline' size={windowHeight / 32} colors={colors.black} />
+            </TouchableOpacity>
+          </View>
+          <View style={{
+            flex: 1,
+            height: 50,
+            justifyContent: 'center',
+            alignItems: 'flex-end'
+          }}>
+            <TouchableOpacity style={{
+              padding: 10,
+            }}>
+              <Icon type='ionicon' name='bookmark-outline' size={windowHeight / 32} colors={colors.black} />
+            </TouchableOpacity>
+          </View>
+        </View>
+        {/*  */}
+
+        <View style={{
+          paddingHorizontal: 10,
+        }}>
+          <Text style={{
+            color: colors.black,
+            fontFamily: fonts.secondary[600],
+            fontSize: windowWidth / 32,
+          }}>{like} Suka</Text>
+          <Text style={{
+            marginTop: 5,
+            color: colors.black,
+            fontFamily: fonts.secondary[600],
+            fontSize: windowWidth / 32,
+          }}>{username} <Text style={{
+            color: colors.black,
+            fontFamily: fonts.secondary[400],
+            fontSize: windowWidth / 32,
+          }}>{desc}</Text></Text>
+        </View>
+        {/* /komentar */}
+
+        <View style={{
+          paddingHorizontal: 10,
+        }}>
+
+          <Text style={{
+            marginTop: 5,
+            color: colors.border,
+            fontFamily: fonts.secondary[400],
+            fontSize: windowWidth / 32,
+          }}>Lihat semua komentar
+          </Text>
+        </View>
+
+
+        <View style={{
+          paddingHorizontal: 10,
+        }}>
+
+          <Text style={{
+            marginTop: 5,
+            color: colors.black,
+            fontFamily: fonts.secondary[600],
+            fontSize: windowWidth / 32,
+          }}>Dani_Official <Text style={{
+            color: colors.black,
+            fontFamily: fonts.secondary[400],
+            fontSize: windowWidth / 32,
+          }}>siap bos wkwk </Text></Text>
+
+          <Text style={{
+            marginTop: 5,
+            color: colors.black,
+            fontFamily: fonts.secondary[600],
+            fontSize: windowWidth / 32,
+          }}>Indah289 <Text style={{
+            color: colors.black,
+            fontFamily: fonts.secondary[400],
+            fontSize: windowWidth / 32,
+          }}>ayo maju indonesia!</Text></Text>
+        </View>
+      </View>
     )
   }
 
@@ -155,46 +273,93 @@ export default function Home({ navigation }) {
         flex: 1,
         backgroundColor: colors.white,
       }}>
-      <MyHeader telepon={comp.tlp} />
+      {/* header */}
+      <View style={{
+        flexDirection: 'row',
+        height: 60,
+        padding: 10,
+      }}>
+        <View style={{
+          flex: 1,
+        }}>
+          <Image source={require('../../assets/logo.png')} style={{
+            width: 100,
+            resizeMode: 'contain',
+            height: 50,
+          }} />
+        </View>
+        <View style={{
+          height: 50,
+          marginHorizontal: 5,
+          justifyContent: 'center'
+        }}>
+          <TouchableOpacity style={{
+            padding: 10,
+          }}>
+            <Icon type='ionicon' name='add-circle-outline' size={windowHeight / 30} colors={colors.black} />
+          </TouchableOpacity>
+        </View>
+        <View style={{
+          height: 50,
+          marginHorizontal: 5,
+          justifyContent: 'center'
+        }}>
+          <TouchableOpacity style={{
+            padding: 10,
+          }}>
+            <Icon type='ionicon' name='heart-outline' size={windowHeight / 30} colors={colors.black} />
+          </TouchableOpacity>
+        </View>
+        <View style={{
+          height: 50,
+          marginHorizontal: 5,
+          justifyContent: 'center'
+        }}>
+          <TouchableOpacity style={{
+            padding: 10,
+          }}>
+            <Icon type='ionicon' name='paper-plane-outline' size={windowHeight / 30} colors={colors.black} />
+          </TouchableOpacity>
+        </View>
+      </View>
+
+
+
+
+
       <ScrollView style={{
+
         backgroundColor: colors.background1
       }}>
-        <MyGap jarak={10} />
-        <View style={{
-          paddingHorizontal: 10
-        }}>
-          <Text style={{
-            fontFamily: fonts.secondary[600],
-            fontSize: windowWidth / 28
-          }}>Halo {user.nama_lengkap}</Text>
-        </View>
-        <MyGap jarak={10} />
-        <MyCarouser />
 
 
-        {/* list Kategoti */}
-        <View>
-          <View style={{
-            flexDirection: 'row',
-            flex: 1,
-            paddingHorizontal: 10,
-            padding: 10,
-            alignItems: 'center'
-          }}>
-            <Icon type='ionicon' name="grid" color={colors.primary} />
-            <Text style={{
-              left: 10,
-              color: colors.primary,
-              fontFamily: fonts.secondary[600],
-              fontSize: windowWidth / 25,
-            }}>Kategori Produk TMP Mart</Text>
-          </View>
-          <View style={{
-            flex: 1,
-          }}>
-            <FlatList numColumns={2} data={kategori} renderItem={__renderItemKategori} />
-          </View>
-        </View>
+
+        <MYPost
+          pp='https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8ZmFjZXxlbnwwfDJ8MHx8&auto=format&fit=crop&w=500&q=60'
+          username="agungjuaedi99"
+          img='https://images.unsplash.com/photo-1472213984618-c79aaec7fef0?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1455&q=80'
+          like="1.292"
+          desc="Belajarlah dari hari hari kemarin dan hiduplah untuk hari ini, lalu berharaplah untuk hari esok."
+
+        />
+        <MYPost
+          pp='https://img.freepik.com/free-photo/portrait-white-man-isolated_53876-40306.jpg'
+          username="fadhlan_himwawan"
+          img='https://images.unsplash.com/photo-1516689807549-04b4c3b4ee35?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&q=80'
+          like="1.292"
+          desc="Impian tidak dapat terwujud dengan sendirinya, akan tetapi impian akan datang ketika seseorang berusaha untuk meraihnya."
+
+        />
+        <MYPost
+          pp='https://i0.wp.com/www.zwivel.com/blog/wp-content/uploads/2017/11/Johnny-Depp.jpg?resize=800%2C602&ssl=1'
+          username="febriharyadi"
+          img='https://images.unsplash.com/photo-1608142172765-6949c94646ca?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=580&q=80'
+          like="1.292"
+          desc="Kamu memiliki waktu terbatas, sehingga jangan sia-siakan waktu itu untuk menjalani kehidupan orang lain."
+
+        />
+
+
       </ScrollView>
 
     </SafeAreaView>

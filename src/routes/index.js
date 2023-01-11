@@ -71,13 +71,8 @@ const MainApp = () => {
   return (
     <Tab.Navigator tabBar={props => <BottomNavigator {...props} />}>
       <Tab.Screen name="Home" component={Home} />
-      <Tab.Screen name="Suggest" component={Add} />
 
-      <Tab.Screen name="Produk" component={Barang} />
-
-      <Tab.Screen name="Favorit" component={Wishlist} />
-
-      <Tab.Screen name="History" component={ListData} />
+      <Tab.Screen name="Account" component={Account} />
     </Tab.Navigator>
   );
 };
@@ -365,7 +360,7 @@ export default function Router() {
         name="Register"
         component={Register}
         options={{
-          headerShown: false,
+          headerShown: true,
           headerTitle: 'Register',
           headerTintColor: 'white',
           headerStyle: {
@@ -788,9 +783,9 @@ export default function Router() {
         component={EditProfile}
         options={({ route, navigation }) => ({
           title: 'Edit Profile',
-          headerTintColor: colors.white,
+          headerTintColor: colors.black,
           headerStyle: {
-            backgroundColor: colors.primary,
+            backgroundColor: colors.white,
             elevation: 0, // remove shadow on Android
           },
           cardStyleInterpolator: ({ current, layouts }) => {

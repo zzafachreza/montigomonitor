@@ -7,12 +7,12 @@ import {
   Dimensions,
   Animated,
 } from 'react-native';
-import {fonts} from '../../utils/fonts';
+import { fonts } from '../../utils/fonts';
 import LottieView from 'lottie-react-native';
-import {MyButton} from '../../components';
-import {colors} from '../../utils/colors';
+import { MyButton } from '../../components';
+import { colors } from '../../utils/colors';
 
-export default function Success({navigation, route}) {
+export default function Success({ navigation, route }) {
   const windowWidth = Dimensions.get('window').width;
   const windowHeight = Dimensions.get('window').height;
   const txt = new Animated.Value(-windowWidth);
@@ -57,7 +57,7 @@ export default function Success({navigation, route}) {
           padding: 10,
         }}>
         <MyButton
-          title="MASUK SEKARANG"
+          title="Login Now"
           warna={colors.primary}
           Icons="log-in"
           onPress={() => navigation.replace('Login')}

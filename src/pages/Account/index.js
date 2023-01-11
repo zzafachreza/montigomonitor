@@ -48,6 +48,31 @@ export default function Account({ navigation, route }) {
     );
   };
 
+  const MYListData = ({ label, value }) => {
+    return <View
+      style={{
+        marginVertical: 3,
+        padding: 10,
+        backgroundColor: colors.white,
+        borderRadius: 10,
+      }}>
+      <Text
+        style={{
+          fontFamily: fonts.secondary[600],
+          color: colors.black,
+        }}>
+        {label}
+      </Text>
+      <Text
+        style={{
+          fontFamily: fonts.secondary[400],
+          color: colors.primary,
+        }}>
+        {value}
+      </Text>
+    </View>
+  }
+
   return (
     <SafeAreaView style={{
       flex: 1,
@@ -55,160 +80,13 @@ export default function Account({ navigation, route }) {
     }}>
       <View style={{ padding: 10 }}>
 
-
-        {/* data detail */}
-        <View style={{ padding: 10 }}>
-
-
-          <MyGap jarak={10} />
-          <View>
-            {/* <View
-              style={{
-                marginVertical: 3,
-                padding: 10,
-                backgroundColor: colors.white,
-                borderRadius: 10,
-              }}>
-              <Text
-                style={{
-                  fontFamily: fonts.secondary[600],
-                  color: colors.black,
-                }}>
-                Customer ID
-              </Text>
-              <Text
-                style={{
-                  fontFamily: fonts.secondary[400],
-                  color: colors.primary,
-                }}>
-                {user.id_customer}
-              </Text>
-            </View>
-
-            <View
-              style={{
-                marginVertical: 3,
-                padding: 10,
-                backgroundColor: colors.white,
-                borderRadius: 10,
-              }}>
-              <Text
-                style={{
-                  fontFamily: fonts.secondary[600],
-                  color: colors.black,
-                }}>
-                Nama Toko
-              </Text>
-              <Text
-                style={{
-                  fontFamily: fonts.secondary[400],
-                  color: colors.primary,
-                }}>
-                {user.nama_toko}
-              </Text>
-            </View>
-
-            <View
-              style={{
-                marginVertical: 3,
-                padding: 10,
-                backgroundColor: colors.white,
-                borderRadius: 10,
-              }}>
-              <Text
-                style={{
-                  fontFamily: fonts.secondary[600],
-                  color: colors.black,
-                }}>
-                Alamat Toko
-              </Text>
-              <Text
-                style={{
-                  fontFamily: fonts.secondary[400],
-                  color: colors.primary,
-                }}>
-                {user.alamat_toko}
-              </Text>
-            </View> */}
-
-
-            <View
-              style={{
-                marginVertical: 3,
-                padding: 10,
-                backgroundColor: colors.white,
-                borderRadius: 10,
-              }}>
-              <Text
-                style={{
-                  fontFamily: fonts.secondary[600],
-                  color: colors.black,
-                }}>
-                Nama Lengkap
-              </Text>
-              <Text
-                style={{
-                  fontFamily: fonts.secondary[400],
-                  color: colors.primary,
-                }}>
-                {user.nama_lengkap}
-              </Text>
-            </View>
-
-
-
-            <View
-              style={{
-                marginVertical: 3,
-                padding: 10,
-                backgroundColor: colors.white,
-                borderRadius: 10,
-              }}>
-              <Text
-                style={{
-                  fontFamily: fonts.secondary[600],
-                  color: colors.black,
-                }}>
-                Telepon / Whatsapp
-              </Text>
-              <Text
-                style={{
-                  fontFamily: fonts.secondary[400],
-                  color: colors.primary,
-                }}>
-                {user.telepon}
-              </Text>
-            </View>
-
-            <View
-              style={{
-                marginVertical: 3,
-                padding: 10,
-                backgroundColor: colors.white,
-                borderRadius: 10,
-              }}>
-              <Text
-                style={{
-                  fontFamily: fonts.secondary[600],
-                  color: colors.black,
-                }}>
-                Alamat
-              </Text>
-              <Text
-                style={{
-                  fontFamily: fonts.secondary[400],
-                  color: colors.primary,
-                }}>
-                {user.alamat}
-              </Text>
-            </View>
-
-
-
-
-
-          </View>
-        </View>
+        <MYListData label="Name" value={user.nama_lengkap} />
+        <MYListData label="Departement" value={user.departement} />
+        <MYListData label="Join Date" value={user.tanggal_daftar} />
+        <MYListData label="Barcode" value={user.barcode} />
+        <MYListData label="Birthday" value={user.tanggal_lahir} />
+        <MYListData label="Email" value={user.email} />
+        <MYListData label="Phone Number" value={user.telepon} />
 
         {/* button */}
         <View style={{ padding: 10, flexDirection: 'row' }}>

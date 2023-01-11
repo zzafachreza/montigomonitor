@@ -19,7 +19,7 @@ export default function BottomNavigator({ state, descriptors, navigation }) {
   }
 
   return (
-    <View style={{ backgroundColor: colors.primary, flexDirection: 'row' }}>
+    <View style={{ backgroundColor: colors.white, flexDirection: 'row', borderTopWidth: 1, borderTopColor: colors.border_list }}>
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
         const label =
@@ -67,9 +67,9 @@ export default function BottomNavigator({ state, descriptors, navigation }) {
         } else if (label === 'Suggest') {
           iconName = 'duplicate-outline';
           Newlabel = 'Suggest';
-        } else if (label === 'History') {
-          iconName = 'receipt-outline';
-          Newlabel = 'History';
+        } else if (label === 'Account') {
+          iconName = 'person-outline';
+          Newlabel = 'Account';
         } else if (label === 'Favorit') {
           iconName = 'heart-outline';
           Newlabel = 'Favorit';
@@ -94,7 +94,7 @@ export default function BottomNavigator({ state, descriptors, navigation }) {
             style={{ flex: 1 }}>
             <View
               style={{
-                color: isFocused ? colors.primary : '#919095',
+                color: isFocused ? colors.black : colors.black,
                 paddingTop: 5,
                 paddingBottom: 0,
                 fontSize: 12,
@@ -114,16 +114,10 @@ export default function BottomNavigator({ state, descriptors, navigation }) {
                   name={isFocused ? iconName.replace('-outline', '') : iconName}
                   type="ionicon"
                   size={windowWidth / 20}
-                  color={isFocused ? colors.white : colors.white}
+                  color={isFocused ? colors.black : colors.black}
                 />
 
-                <Text
-                  style={{
-                    fontSize: windowWidth / 45,
-                    color: isFocused ? colors.white : colors.white,
-                  }}>
-                  {Newlabel}
-                </Text>
+
               </View>
             </View>
           </TouchableOpacity>

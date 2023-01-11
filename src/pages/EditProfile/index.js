@@ -16,7 +16,7 @@ import { fonts } from '../../utils/fonts';
 import { MyInput, MyGap, MyButton, MyPicker } from '../../components';
 import axios from 'axios';
 import LottieView from 'lottie-react-native';
-import { getData, storeData, urlAPI } from '../../utils/localStorage';
+import { api_token, getData, storeData, urlAPI } from '../../utils/localStorage';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { showMessage } from 'react-native-flash-message';
 import DatePicker from 'react-native-date-picker';
@@ -24,11 +24,21 @@ import { Icon } from 'react-native-elements';
 
 export default function EditProfile({ navigation, route }) {
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState({});
+  const [data, setData] = useState({
+    api_token: api_token,
+  });
 
   useEffect(() => {
     getData('user').then(res => {
-      setData(res);
+      setData({
+        ...data,
+        nama_lengkap: res.nama_lengkap,
+        id: res.id,
+        email: res.email,
+        telepon: res.telepon,
+        departement: res.departement,
+        tanggal_lahir: res.tanggal_lahir,
+      });
       console.error('data user', res);
     });
     console.log('test edit');
@@ -36,15 +46,15 @@ export default function EditProfile({ navigation, route }) {
 
 
   const simpan = () => {
-    setLoading(true);
+    // setLoading(true);
     console.log('kirim edit', data);
-    axios.post(urlAPI + '/profile.php', data).then(res => {
+    axios.post(urlAPI + 'profile_update', data).then(res => {
       console.log(res.data);
-      storeData('user', res.data);
+      storeData('user', res.data.data);
       setLoading(false);
       showMessage({
         type: 'success',
-        message: 'Data bershasil diupdate..',
+        message: 'your profile has been updated.',
       });
       navigation.replace('MainApp');
     });
@@ -54,49 +64,14 @@ export default function EditProfile({ navigation, route }) {
     <SafeAreaView style={{
       flex: 1,
       padding: 10,
+      backgroundColor: colors.white,
     }}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={{
-          padding: 10,
-          justifyContent: 'center',
-          alignItems: 'center'
-        }}>
-          {/* <Text style={{
-            fontFamily: fonts.secondary[600],
-            fontSize: 12
-          }}>Customer ID</Text>
-          <Text style={{
-            fontFamily: fonts.secondary[600],
-            fontSize: 15,
-            color: colors.primary
-          }}>{data.id_customer}</Text> */}
-        </View>
 
-        {/* <MyInput
-          label="Nama Toko"
-          iconname="home-outline"
-          value={data.nama_toko}
-          onChangeText={value =>
-            setData({
-              ...data,
-              nama_toko: value,
-            })
-          }
-        />
+
 
         <MyInput
-          label="Alamat Toko"
-          iconname="location-outline"
-          value={data.alamat_toko}
-          onChangeText={value =>
-            setData({
-              ...data,
-              alamat_toko: value,
-            })
-          }
-        /> */}
-        <MyInput
-          label="Nama Pribadi"
+          label="Name"
           iconname="person-outline"
           value={data.nama_lengkap}
           onChangeText={value =>
@@ -109,7 +84,7 @@ export default function EditProfile({ navigation, route }) {
 
         <MyGap jarak={10} />
         <MyInput
-          label="Telepon"
+          label="Phone Number"
           iconname="call-outline"
           keyboardType="number-pad"
           value={data.telepon}
@@ -124,14 +99,29 @@ export default function EditProfile({ navigation, route }) {
         <MyGap jarak={10} />
 
         <MyInput
-          label="Alamat"
-          iconname="map-outline"
+          label="Departement"
+          iconname="list-outline"
           multiline={true}
-          value={data.alamat}
+          value={data.departement}
           onChangeText={value =>
             setData({
               ...data,
-              alamat: value,
+              departement: value,
+            })
+          }
+        />
+
+        <MyGap jarak={10} />
+
+        <MyInput
+          label="Birthday ( year-month-day )"
+          iconname="calendar-outline"
+          multiline={true}
+          value={data.tanggal_lahir}
+          onChangeText={value =>
+            setData({
+              ...data,
+              tanggal_lahir: value,
             })
           }
         />
