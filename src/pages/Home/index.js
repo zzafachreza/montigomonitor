@@ -57,8 +57,14 @@ export default function Home({ navigation }) {
     return unsubscribe;
   }, [isFocused]);
 
+  const [company, setCompany] = useState({});
 
   const __getTransaction = async () => {
+
+    axios.post(urlAPI + 'company').then(x => {
+      console.log('slider', x)
+      setCompany(x.data);
+    })
 
     getData('user').then(u => {
 
@@ -66,7 +72,7 @@ export default function Home({ navigation }) {
       axios.post(urlAPI + 'posting_all', {
         fid_user: u.id
       }).then(d => {
-        console.log(d.data);
+
         setData(d.data);
       })
     });
@@ -84,7 +90,7 @@ export default function Home({ navigation }) {
       fid_user: y,
       fid_posting: x
     }).then(res => {
-      console.log(res.data);
+
       showMessage({
         type: 'success',
         message: res.data.message
@@ -100,7 +106,7 @@ export default function Home({ navigation }) {
       fid_user: y,
       fid_posting: x
     }).then(res => {
-      console.log(res.data);
+
       showMessage({
         type: 'success',
         message: res.data.message
@@ -140,7 +146,8 @@ export default function Home({ navigation }) {
             height: 50,
           }} />
         </View>
-        <View style={{
+
+        {user.level !== 'user' && <View style={{
           height: 50,
           marginHorizontal: 5,
           justifyContent: 'center'
@@ -150,7 +157,8 @@ export default function Home({ navigation }) {
           }}>
             <Icon type='ionicon' name='add-circle-outline' size={windowHeight / 30} colors={colors.black} />
           </TouchableOpacity>
-        </View>
+        </View>}
+
         <View style={{
           height: 50,
           marginHorizontal: 5,
@@ -173,6 +181,23 @@ export default function Home({ navigation }) {
 
         backgroundColor: colors.background1
       }}>
+
+        <View style={{
+          margin: 10,
+          padding: 10,
+          borderWidth: 1,
+          borderRadius: 10,
+          borderColor: colors.zavalabs
+        }}>
+          <Text style={{
+            fontFamily: fonts.secondary[600],
+            fontSize: windowWidth / 32
+          }}>{company.judul}</Text>
+          <Text style={{
+            fontFamily: fonts.secondary[400],
+            fontSize: windowWidth / 35
+          }}>{company.deskripsi}</Text>
+        </View>
 
         {data.map(item => {
           return (

@@ -31,7 +31,7 @@ export default function MyPicker({
         <Text
           style={{
             fontFamily: fonts.secondary[600],
-            color: colors.primary,
+            color: colors.black,
             left: 10,
             fontSize: 12,
             ...styleLabel,
