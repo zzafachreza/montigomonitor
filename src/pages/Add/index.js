@@ -54,7 +54,7 @@ export default function ({ navigation, route }) {
     const [loading, setLoading] = useState(false);
     const __sendServer = () => {
         setLoading(true);
-        // console.log(kirim);
+        console.log(kirim);
 
         axios.post(urlAPI + 'posting', kirim).then(res => {
             setLoading(false);
@@ -67,17 +67,7 @@ export default function ({ navigation, route }) {
             navigation.replace('MainApp');
         })
 
-        // setTimeout(() => {
-        //     axios.post(urlAPI + '/saran.php', kirim).then(res => {
-        //         console.log(res.data);
-        //         setLoading(false);
-        //         showMessage({
-        //             type: 'success',
-        //             message: 'Suggest Produk berhasil dikirim !'
-        //         });
-        //         navigation.replace('MainApp');
-        //     })
-        // }, 1200)
+
     }
 
 
@@ -217,7 +207,7 @@ export default function ({ navigation, route }) {
                             ...kirim,
                             link: x
                         })
-                    }} label="Enter your video link" placeholder="https://www.youtube.com/watch?v=HTzMx24boDY" iconname="logo-youtube" />
+                    }} label="Enter your video link" placeholder="HTzMx24boDY" iconname="logo-youtube" />
                     }
 
                     {kirim.tipe === 'Photo' && <UploadFoto

@@ -20,6 +20,7 @@ import { useIsFocused } from '@react-navigation/native';
 import axios from 'axios';
 import YoutubePlayer from "react-native-youtube-iframe";
 import { showMessage } from 'react-native-flash-message';
+import Share from 'react-native-share';
 export default function Account({ navigation, route }) {
   const [user, setUser] = useState({});
   const [com, setCom] = useState({});

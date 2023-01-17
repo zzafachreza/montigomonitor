@@ -27,6 +27,7 @@ import { MyGap } from '../../components';
 import MyHeader from '../../components/MyHeader';
 import { showMessage } from 'react-native-flash-message';
 import YoutubePlayer from "react-native-youtube-iframe";
+import Share from 'react-native-share';
 export default function Cart({ navigation }) {
   const [user, setUser] = useState({});
   const [data, setData] = useState([]);
@@ -217,10 +218,33 @@ export default function Cart({ navigation }) {
                   height: 50,
                   justifyContent: 'center'
                 }}>
-                  <TouchableOpacity style={{
+                  <TouchableOpacity onPress={() => navigation.navigate('Komentar', item)} style={{
                     padding: 10,
                   }}>
                     <Icon type='ionicon' name='chatbubble-outline' size={windowHeight / 35} colors={colors.black} />
+                  </TouchableOpacity>
+                </View>
+
+                <View style={{
+                  height: 50,
+                  justifyContent: 'center'
+                }}>
+                  <TouchableOpacity onPress={() => {
+                    Share.open({
+                      url: item.tipe == "Video" ? 'https://youtu.be/' + item.link : item.link,
+                      title: item.nama_lengkap,
+                      message: item.desc
+                    })
+                      .then((res) => {
+                        console.log(res);
+                      })
+                      .catch((err) => {
+                        err && console.log(err);
+                      });
+                  }} style={{
+                    padding: 10,
+                  }}>
+                    <Icon type='ionicon' name='share-social-outline' size={windowHeight / 35} colors={colors.black} />
                   </TouchableOpacity>
                 </View>
 
