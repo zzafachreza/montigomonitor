@@ -312,7 +312,7 @@ export default function Register({ navigation }) {
           loop
           style={{
             flex: 1,
-            backgroundColor: colors.primary,
+            backgroundColor: colors.border_list,
           }}
         />
       )}

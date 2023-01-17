@@ -213,7 +213,7 @@ export default function Login({ navigation }) {
             source={require('../../assets/animation.json')}
             autoPlay
             loop
-            style={{ backgroundColor: colors.primary }}
+            style={{ backgroundColor: colors.border_list }}
           />
         )
       }

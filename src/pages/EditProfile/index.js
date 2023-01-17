@@ -38,6 +38,8 @@ export default function EditProfile({ navigation, route }) {
         telepon: res.telepon,
         departement: res.departement,
         tanggal_lahir: res.tanggal_lahir,
+        newfoto_user: null,
+        foto_user: res.foto_user
       });
       console.error('data user', res);
     });
@@ -46,7 +48,7 @@ export default function EditProfile({ navigation, route }) {
 
 
   const simpan = () => {
-    // setLoading(true);
+    setLoading(true);
     console.log('kirim edit', data);
     axios.post(urlAPI + 'profile_update', data).then(res => {
       console.log(res.data);
@@ -68,7 +70,49 @@ export default function EditProfile({ navigation, route }) {
     }}>
       <ScrollView showsVerticalScrollIndicator={false}>
 
+        <View style={{
+          padding: 10,
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}>
+          <TouchableOpacity onPress={() => {
 
+
+            launchImageLibrary({
+              includeBase64: true,
+              quality: 1,
+              mediaType: "photo",
+              maxWidth: 300,
+              maxHeight: 300
+            }, response => {
+              // console.log('All Response = ', response);
+
+              setData({
+                ...data,
+                newfoto_user: `data:${response.type};base64, ${response.base64}`,
+              });
+            });
+
+
+
+          }} style={{
+            width: 100,
+            height: 100,
+            borderWidth: 3,
+            borderColor: colors.primary,
+            overflow: 'hidden',
+            borderRadius: 50,
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}>
+            <Image style={{
+              width: 100,
+              height: 100,
+            }} source={{
+              uri: data.newfoto_user !== null ? data.newfoto_user : data.foto_user,
+            }} />
+          </TouchableOpacity>
+        </View>
 
         <MyInput
           label="Name"
@@ -163,7 +207,7 @@ export default function EditProfile({ navigation, route }) {
           loop
           style={{
             flex: 1,
-            backgroundColor: colors.primary,
+            backgroundColor: colors.border,
           }}
         />
       )}

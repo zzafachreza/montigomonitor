@@ -58,6 +58,8 @@ import {
   Wishlist,
   BarangDetail,
   BarangEdit,
+  AccountEdit,
+  Komentar,
 } from '../pages';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { BottomNavigator } from '../components';
@@ -362,9 +364,9 @@ export default function Router() {
         options={{
           headerShown: true,
           headerTitle: 'Register',
-          headerTintColor: 'white',
+          headerTintColor: colors.black,
           headerStyle: {
-            backgroundColor: colors.primary,
+            backgroundColor: colors.white,
             elevation: 0, // remove shadow on Android
           },
           cardStyleInterpolator: ({ current, layouts }) => {
@@ -538,10 +540,10 @@ export default function Router() {
         name="Cart"
         component={Cart}
         options={({ route, navigation }) => ({
-          title: 'Keranjang',
-          headerTintColor: 'white',
+          title: 'Your Post Like',
+          headerTintColor: 'black',
           headerStyle: {
-            backgroundColor: colors.primary,
+            backgroundColor: colors.white,
             elevation: 0, // remove shadow on Android
           },
           cardStyleInterpolator: ({ current, layouts }) => {
@@ -663,6 +665,22 @@ export default function Router() {
         component={Account}
         options={{
           headerShown: false
+        }}
+      />
+
+      <Stack.Screen
+        name="AccountEdit"
+        component={AccountEdit}
+        options={{
+          headerShown: false
+        }}
+      />
+
+      <Stack.Screen
+        name="Komentar"
+        component={Komentar}
+        options={{
+          headerShown: true
         }}
       />
 

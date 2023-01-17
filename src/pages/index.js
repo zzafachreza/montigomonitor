@@ -47,7 +47,8 @@ import Kuis from './Kuis';
 import Wishlist from './Wishlist';
 import BarangDetail from './BarangDetail';
 import BarangEdit from './BarangEdit';
-
+import AccountEdit from './AccountEdit';
+import Komentar from './Komentar';
 
 
 
@@ -105,5 +106,8 @@ export {
   ListRedeem,
   Wishlist,
   BarangDetail,
-  BarangEdit
+  BarangEdit,
+  AccountEdit,
+  Komentar
+
 };

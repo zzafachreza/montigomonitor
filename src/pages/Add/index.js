@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, SafeAreaView, ScrollView, Modal, PermissionsAndroid, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, ScrollView, Modal, PermissionsAndroid, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
 import { MyPicker, MyGap, MyInput, MyButton } from '../../components';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { colors } from '../../utils/colors';
 import { fonts, windowHeight, windowWidth } from '../../utils/fonts';
 import { Image } from 'react-native';
-import { getData, urlAPI } from '../../utils/localStorage';
+import { getData, MYAPP, urlAPI } from '../../utils/localStorage';
 import axios from 'axios';
 import LottieView from 'lottie-react-native';
 import 'intl';
@@ -45,37 +45,48 @@ export default function ({ navigation, route }) {
     const user = route.params;
     const [data, setData] = useState([]);
     const [kirim, setKirim] = useState({
-        nama_saran: '',
-        harga_saran: '',
-        foto: ''
+        fid_user: route.params.id,
+        desc: '',
+        link: 'https://zavalabs.com/nogambar.jpg',
+        tipe: 'Photo'
     });
 
     const [loading, setLoading] = useState(false);
     const __sendServer = () => {
         setLoading(true);
+        // console.log(kirim);
 
-        setTimeout(() => {
-            axios.post(urlAPI + '/saran.php', kirim).then(res => {
-                console.log(res.data);
-                setLoading(false);
-                showMessage({
-                    type: 'success',
-                    message: 'Suggest Produk berhasil dikirim !'
-                });
-                navigation.replace('MainApp');
-            })
-        }, 1200)
+        axios.post(urlAPI + 'posting', kirim).then(res => {
+            setLoading(false);
+            console.log(res.data);
+            showMessage({
+                type: 'success',
+                message: res.data.message
+
+            });
+            navigation.replace('MainApp');
+        })
+
+        // setTimeout(() => {
+        //     axios.post(urlAPI + '/saran.php', kirim).then(res => {
+        //         console.log(res.data);
+        //         setLoading(false);
+        //         showMessage({
+        //             type: 'success',
+        //             message: 'Suggest Produk berhasil dikirim !'
+        //         });
+        //         navigation.replace('MainApp');
+        //     })
+        // }, 1200)
     }
 
 
 
-    const [foto1, setfoto1] = useState(
-        'https://zavalabs.com/nogambar.jpg',
-    );
+
 
     const options = {
         includeBase64: true,
-        quality: 0.3,
+        quality: 1,
     };
 
     const getCamera = xyz => {
@@ -91,9 +102,9 @@ export default function ({ navigation, route }) {
                     case 1:
                         setKirim({
                             ...kirim,
-                            foto: `data:${response.type};base64, ${response.base64}`,
+                            link: `data:${response.type};base64, ${response.base64}`,
                         });
-                        setfoto1(`data:${response.type};base64, ${response.base64}`);
+
                         break;
                 }
             }
@@ -114,9 +125,9 @@ export default function ({ navigation, route }) {
                     case 1:
                         setKirim({
                             ...kirim,
-                            foto: `data:${response.type};base64, ${response.base64}`,
+                            link: `data:${response.type};base64, ${response.base64}`,
                         });
-                        setfoto1(`data:${response.type};base64, ${response.base64}`);
+
                         break;
                 }
             }
@@ -127,76 +138,56 @@ export default function ({ navigation, route }) {
         return (
             <View
                 style={{
-                    padding: 10,
-                    color: colors.textPrimary,
-                    marginVertical: 10,
-                    borderRadius: 10,
-                    borderColor: colors.border,
+                    borderWidth: 1,
+                    borderColor: colors.zavalabs,
+                    // borderRadius: 10,
+                    justifyContent: 'center',
+                    overflow: 'hidden',
+                    alignItems: 'center'
                 }}>
-                <Text
-                    style={{
-                        fontFamily: fonts.secondary[600],
-                        color: colors.textPrimary,
-                    }}>
-                    {label}
-                </Text>
-                <Image
-                    source={{
-                        uri: foto,
-                    }}
-                    style={{
-                        width: '100%',
-                        aspectRatio: 2,
-                    }}
-                    resizeMode="center"
-                />
-                <View
-                    style={{
-                        flexDirection: 'row',
-                    }}>
-                    <View
+
+                <TouchableOpacity onPress={() => {
+
+                    Alert.alert(MYAPP, 'Chose Upload your image from..', [
+                        {
+                            text: 'CANCEL',
+
+                        },
+                        {
+                            text: 'CAMERA',
+                            onPress: onPress1
+                        },
+                        {
+                            text: 'GALLERY',
+                            onPress: onPress2
+                        }
+                    ])
+
+                }}>
+                    <Image
+                        source={{
+                            uri: foto,
+                        }}
                         style={{
-                            flex: 1,
-                            paddingRight: 5,
-                        }}>
-                        <MyButton
-                            onPress={onPress1}
-                            colorText={colors.white}
-                            title="KAMERA"
-                            warna={colors.primary}
-                        />
-                    </View>
-                    <View
-                        style={{
-                            flex: 1,
-                            paddingLeft: 5,
-                        }}>
-                        <MyButton
-                            colorText={colors.white}
-                            onPress={onPress2}
-                            title="GALLERY"
-                            warna={colors.secondary}
-                        />
-                    </View>
-                </View>
+                            width: windowWidth,
+                            height: windowWidth / 1.2,
+                        }}
+                        resizeMode="contain"
+                    />
+                </TouchableOpacity>
+
+
             </View>
         );
     };
 
     useEffect(() => {
         requestCameraPermission();
-        getData('user').then(u => {
-            setKirim({
-                ...kirim,
-                fid_user: u.id
-            })
-        })
     }, [])
 
     return (
         <>
             <ScrollView>
-                <MyHeader />
                 <SafeAreaView style={{
                     flex: 1,
                     padding: 10,
@@ -204,32 +195,43 @@ export default function ({ navigation, route }) {
                     backgroundColor: colors.background1
                 }}>
 
-
-                    <MyInput value={kirim.nama_saran} onChangeText={x => {
+                    <MyPicker label="Tipe Posting" iconname="list" onValueChange={x => setKirim({
+                        ...kirim,
+                        tipe: x
+                    })} value={kirim.tipe} data={[
+                        { value: 'Photo', label: 'Photo' },
+                        { value: 'Video', label: 'Video' }
+                    ]} />
+                    <MyGap jarak={10} />
+                    <MyInput value={kirim.desc} onChangeText={x => {
                         setKirim({
                             ...kirim,
-                            nama_saran: x
+                            desc: x
                         })
-                    }} autoFocus label="Masukan Suggest Produk" iconname="cube" />
-
-                    <MyInput value={kirim.harga_saran} onChangeText={x => {
-                        setKirim({
-                            ...kirim,
-                            harga_saran: x
-                        })
-                    }} autoFocus label="Masukan Kisaran harga" iconname="cash" />
-
-
-                    <UploadFoto
-                        onPress1={() => getCamera(1)}
-                        onPress2={() => getGallery(1)}
-                        label="Upload Foto Produk"
-                        foto={foto1}
-                    />
+                    }} label="Enter Description your post" placeholder="input your description here..." multiline iconname="create" />
 
                     <MyGap jarak={10} />
-                    {!loading && <MyButton onPress={__sendServer} title="Kirim Sugggest Produk" Icons="cloud-upload-outline" warna={colors.primary} />}
-                    {loading && <ActivityIndicator color={colors.secondary} size="large" />}
+
+                    {kirim.tipe === 'Video' && <MyInput onChangeText={x => {
+                        setKirim({
+                            ...kirim,
+                            link: x
+                        })
+                    }} label="Enter your video link" placeholder="https://www.youtube.com/watch?v=HTzMx24boDY" iconname="logo-youtube" />
+                    }
+
+                    {kirim.tipe === 'Photo' && <UploadFoto
+                        onPress1={() => getCamera(1)}
+                        onPress2={() => getGallery(1)}
+                        foto={kirim.link}
+                    />}
+
+
+
+
+                    <MyGap jarak={10} />
+                    {!loading && <MyButton onPress={__sendServer} title="Upload your post" Icons="cloud-upload-outline" warna={colors.primary} />}
+                    {loading && <ActivityIndicator color={colors.primary} size="large" />}
 
                 </SafeAreaView >
             </ScrollView>

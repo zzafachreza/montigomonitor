@@ -25,16 +25,11 @@ import LottieView from 'lottie-react-native';
 import { useIsFocused } from '@react-navigation/native';
 import { MyGap } from '../../components';
 import MyHeader from '../../components/MyHeader';
-
+import { showMessage } from 'react-native-flash-message';
+import YoutubePlayer from "react-native-youtube-iframe";
 export default function Home({ navigation }) {
   const [user, setUser] = useState({});
-  const [kategori, setKategori] = useState([]);
-
-  const [produk, setProduk] = useState([]);
-  const [cart, setCart] = useState(0);
-  const [token, setToken] = useState('');
-  const [comp, setComp] = useState({});
-
+  const [data, setData] = useState([]);
   const isFocused = useIsFocused();
 
   useEffect(() => {
@@ -43,11 +38,6 @@ export default function Home({ navigation }) {
 
       const json = JSON.stringify(remoteMessage);
       const obj = JSON.parse(json);
-
-      // console.log(obj);
-
-      // alert(obj.notification.title)
-
       PushNotification.localNotification({
         /* Android Only Properties */
         channelId: 'montigomonitor', // (required) channelId, if the channel doesn't exist, notification will not trigger.
@@ -57,51 +47,67 @@ export default function Home({ navigation }) {
     });
 
 
-    getDataKategori();
 
-    axios.post(urlAPI + '/company.php').then(c => {
-      console.log(c.data);
-      setComp(c.data);
-    })
 
     if (isFocused) {
-      __getDataUserInfo();
+      __getTransaction();
     }
     return unsubscribe;
   }, [isFocused]);
 
 
+  const __getTransaction = async () => {
+
+    getData('user').then(u => {
+
+      setUser(u);
+      axios.post(urlAPI + 'posting_all', {
+        fid_user: u.id
+      }).then(d => {
+        console.log(d.data);
+        setData(d.data);
+      })
+    });
 
 
-  const getDataKategori = () => {
-    axios.post(urlAPI + '/1data_kategori.php').then(res => {
-      console.log('kategori', res.data);
 
-      setKategori(res.data);
+  }
+
+
+
+  const likePosting = (x, y) => {
+
+
+    axios.post(urlAPI + 'like', {
+      fid_user: y,
+      fid_posting: x
+    }).then(res => {
+      console.log(res.data);
+      showMessage({
+        type: 'success',
+        message: res.data.message
+      });
+      __getTransaction();
+    })
+
+
+  }
+
+  const unlikePosting = (x, y) => {
+    axios.post(urlAPI + 'unlike', {
+      fid_user: y,
+      fid_posting: x
+    }).then(res => {
+      console.log(res.data);
+      showMessage({
+        type: 'success',
+        message: res.data.message
+      });
+      __getTransaction();
     })
   }
 
 
-
-  const __getDataUserInfo = () => {
-    getData('user').then(users => {
-      console.log(users);
-      setUser(users);
-
-      getData('token').then(res => {
-        console.log('data token,', res);
-        setToken(res.token);
-        axios
-          .post(urlAPI + '/update_token.php', {
-            id: users.id,
-            token: res.token,
-          })
-          .then(res => {
-            console.error('update token', res.data);
-          });
-      });
-    });
-  }
 
   const windowWidth = Dimensions.get('window').width;
   const windowHeight = Dimensions.get('window').height;
@@ -109,162 +115,6 @@ export default function Home({ navigation }) {
 
 
 
-  const MYPost = ({ pp, username, img, like, desc }) => {
-    return (
-      <View style={{
-        marginVertical: 5,
-      }}>
-        <View style={{
-          flexDirection: 'row',
-          padding: 10,
-          alignItems: 'center'
-        }}>
-          <View>
-            <Image style={{
-              width: 30,
-              borderRadius: 15,
-              height: 30,
-            }} source={{
-              uri: pp
-            }} />
-          </View>
-          <View style={{
-            paddingLeft: 10,
-            paddingRight: 2,
-          }}>
-            <Text style={{
-
-              fontFamily: fonts.secondary[600]
-            }}>{username}</Text>
-          </View>
-          <View>
-            <Image style={{
-              width: 15,
-              height: 15,
-            }} source={require('../../assets/cek.png')} />
-          </View>
-        </View>
-        <View>
-          <Image style={{
-            width: windowWidth,
-            height: windowWidth / 1.2,
-          }} source={{
-            uri: img
-          }} />
-        </View>
-        <View style={{
-          flexDirection: 'row',
-          alignItems: 'center'
-        }}>
-          <View style={{
-            height: 50,
-            justifyContent: 'center'
-          }}>
-            <TouchableOpacity style={{
-              padding: 10,
-            }}>
-              <Icon type='ionicon' name='heart-outline' size={windowHeight / 32} colors={colors.black} />
-            </TouchableOpacity>
-          </View>
-          <View style={{
-            height: 50,
-            justifyContent: 'center'
-          }}>
-            <TouchableOpacity style={{
-              padding: 10,
-            }}>
-              <Icon type='ionicon' name='chatbubble-outline' size={windowHeight / 35} colors={colors.black} />
-            </TouchableOpacity>
-          </View>
-          <View style={{
-            height: 50,
-            justifyContent: 'center'
-          }}>
-            <TouchableOpacity style={{
-              padding: 10,
-            }}>
-              <Icon type='ionicon' name='paper-plane-outline' size={windowHeight / 32} colors={colors.black} />
-            </TouchableOpacity>
-          </View>
-          <View style={{
-            flex: 1,
-            height: 50,
-            justifyContent: 'center',
-            alignItems: 'flex-end'
-          }}>
-            <TouchableOpacity style={{
-              padding: 10,
-            }}>
-              <Icon type='ionicon' name='bookmark-outline' size={windowHeight / 32} colors={colors.black} />
-            </TouchableOpacity>
-          </View>
-        </View>
-        {/*  */}
-
-        <View style={{
-          paddingHorizontal: 10,
-        }}>
-          <Text style={{
-            color: colors.black,
-            fontFamily: fonts.secondary[600],
-            fontSize: windowWidth / 32,
-          }}>{like} Suka</Text>
-          <Text style={{
-            marginTop: 5,
-            color: colors.black,
-            fontFamily: fonts.secondary[600],
-            fontSize: windowWidth / 32,
-          }}>{username} <Text style={{
-            color: colors.black,
-            fontFamily: fonts.secondary[400],
-            fontSize: windowWidth / 32,
-          }}>{desc}</Text></Text>
-        </View>
-        {/* /komentar */}
-
-        <View style={{
-          paddingHorizontal: 10,
-        }}>
-
-          <Text style={{
-            marginTop: 5,
-            color: colors.border,
-            fontFamily: fonts.secondary[400],
-            fontSize: windowWidth / 32,
-          }}>Lihat semua komentar
-          </Text>
-        </View>
-
-
-        <View style={{
-          paddingHorizontal: 10,
-        }}>
-
-          <Text style={{
-            marginTop: 5,
-            color: colors.black,
-            fontFamily: fonts.secondary[600],
-            fontSize: windowWidth / 32,
-          }}>Dani_Official <Text style={{
-            color: colors.black,
-            fontFamily: fonts.secondary[400],
-            fontSize: windowWidth / 32,
-          }}>siap bos wkwk </Text></Text>
-
-          <Text style={{
-            marginTop: 5,
-            color: colors.black,
-            fontFamily: fonts.secondary[600],
-            fontSize: windowWidth / 32,
-          }}>Indah289 <Text style={{
-            color: colors.black,
-            fontFamily: fonts.secondary[400],
-            fontSize: windowWidth / 32,
-          }}>ayo maju indonesia!</Text></Text>
-        </View>
-      </View>
-    )
-  }
 
 
   return (
@@ -293,7 +143,7 @@ export default function Home({ navigation }) {
           marginHorizontal: 5,
           justifyContent: 'center'
         }}>
-          <TouchableOpacity style={{
+          <TouchableOpacity onPress={() => navigation.navigate('Add', user)} style={{
             padding: 10,
           }}>
             <Icon type='ionicon' name='add-circle-outline' size={windowHeight / 30} colors={colors.black} />
@@ -304,23 +154,13 @@ export default function Home({ navigation }) {
           marginHorizontal: 5,
           justifyContent: 'center'
         }}>
-          <TouchableOpacity style={{
+          <TouchableOpacity onPress={() => navigation.navigate('Cart', user)} style={{
             padding: 10,
           }}>
             <Icon type='ionicon' name='heart-outline' size={windowHeight / 30} colors={colors.black} />
           </TouchableOpacity>
         </View>
-        <View style={{
-          height: 50,
-          marginHorizontal: 5,
-          justifyContent: 'center'
-        }}>
-          <TouchableOpacity style={{
-            padding: 10,
-          }}>
-            <Icon type='ionicon' name='paper-plane-outline' size={windowHeight / 30} colors={colors.black} />
-          </TouchableOpacity>
-        </View>
+
       </View>
 
 
@@ -332,34 +172,149 @@ export default function Home({ navigation }) {
         backgroundColor: colors.background1
       }}>
 
+        {data.map(item => {
+          return (
+            <View style={{
+              marginVertical: 5,
+            }}>
+              <View style={{
+                flexDirection: 'row',
+                padding: 10,
+                alignItems: 'center'
+              }}>
+                <View>
+                  <Image style={{
+                    width: 30,
+                    borderRadius: 15,
+                    height: 30,
+                  }} source={{
+                    uri: item.foto_user
+                  }} />
+                </View>
+                <View style={{
+                  paddingLeft: 10,
+                }}>
+
+                  <View style={{
+                    flexDirection: 'row'
+                  }}>
+                    <Text style={{
+                      right: 5,
+                      fontFamily: fonts.secondary[600]
+                    }}>{item.nama_lengkap}</Text>
+                    <Image style={{
+                      width: 15,
+                      height: 15,
+                    }} source={require('../../assets/cek.png')} />
+                  </View>
+                  <Text style={{
+                    right: 5,
+                    color: colors.black,
+                    fontFamily: fonts.secondary[300]
+                  }}>{item.departement}</Text>
+                </View>
+
+              </View>
+
+              {item.tipe == 'Photo' && <View>
+                <Image style={{
+                  width: windowWidth,
+                  height: windowWidth / 1.2,
+                }} source={{
+                  uri: item.link
+                }} />
+              </View>}
+
+              {item.tipe == 'Video' && <View>
+                <YoutubePlayer
+                  lay={false}
+                  height={250}
+                  videoId={item.link}
+                />
+
+              </View>}
+              <View style={{
+                flexDirection: 'row',
+                alignItems: 'center'
+              }}>
+                <View style={{
+                  height: 50,
+                  justifyContent: 'center'
+                }}>
+                  {item.oke == 0 && <TouchableOpacity onPress={() => likePosting(item.id_posting, user.id)} style={{
+                    padding: 10,
+                  }}>
+                    <Icon type='ionicon' name={'heart-outline'} size={windowHeight / 32} color={colors.black} />
+                  </TouchableOpacity>}
+
+                  {item.oke > 0 && <TouchableOpacity onPress={() => unlikePosting(item.id_posting, user.id)} style={{
+                    padding: 10,
+                  }}>
+                    <Icon type='ionicon' name={'heart'} size={windowHeight / 32} color={colors.danger} />
+                  </TouchableOpacity>}
+                </View>
+                <View style={{
+                  height: 50,
+                  justifyContent: 'center'
+                }}>
+                  <TouchableOpacity style={{
+                    padding: 10,
+                  }}>
+                    <Icon type='ionicon' name='chatbubble-outline' size={windowHeight / 35} colors={colors.black} />
+                  </TouchableOpacity>
+                </View>
 
 
-        <MYPost
-          pp='https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8ZmFjZXxlbnwwfDJ8MHx8&auto=format&fit=crop&w=500&q=60'
-          username="agungjuaedi99"
-          img='https://images.unsplash.com/photo-1472213984618-c79aaec7fef0?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1455&q=80'
-          like="1.292"
-          desc="Belajarlah dari hari hari kemarin dan hiduplah untuk hari ini, lalu berharaplah untuk hari esok."
+              </View>
+              {/*  */}
+              <View style={{
+                paddingHorizontal: 10,
+              }}>
+                <Text style={{
+                  color: colors.black,
+                  fontFamily: fonts.secondary[600],
+                  fontSize: windowWidth / 32,
+                }}>{item.like} Suka</Text>
+                <Text style={{
+                  marginTop: 5,
+                  color: colors.black,
+                  fontFamily: fonts.secondary[600],
+                  fontSize: windowWidth / 32,
+                }}>{item.nama_lengkap} <Text style={{
+                  color: colors.black,
+                  fontFamily: fonts.secondary[400],
+                  fontSize: windowWidth / 32,
+                }}>{item.desc}</Text></Text>
+              </View>
+              <TouchableOpacity onPress={() => navigation.navigate('Komentar', item)} style={{
+                paddingHorizontal: 10,
+              }}>
 
-        />
-        <MYPost
-          pp='https://img.freepik.com/free-photo/portrait-white-man-isolated_53876-40306.jpg'
-          username="fadhlan_himwawan"
-          img='https://images.unsplash.com/photo-1516689807549-04b4c3b4ee35?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&q=80'
-          like="1.292"
-          desc="Impian tidak dapat terwujud dengan sendirinya, akan tetapi impian akan datang ketika seseorang berusaha untuk meraihnya."
+                <Text style={{
+                  marginTop: 5,
+                  color: colors.border,
+                  fontFamily: fonts.secondary[400],
+                  fontSize: windowWidth / 32,
+                }}>Tampilkan semua {item.komentar} komentar
+                </Text>
+              </TouchableOpacity>
+              <View style={{
+                paddingHorizontal: 10,
+              }}>
+                <Text style={{
+                  marginTop: 5,
+                  color: colors.border,
+                  fontFamily: fonts.secondary[400],
+                  fontSize: windowWidth / 32,
+                }}>{item.tanggal}
+                </Text>
+              </View>
+            </View>
+          )
+        })}
 
-        />
-        <MYPost
-          pp='https://i0.wp.com/www.zwivel.com/blog/wp-content/uploads/2017/11/Johnny-Depp.jpg?resize=800%2C602&ssl=1'
-          username="febriharyadi"
-          img='https://images.unsplash.com/photo-1608142172765-6949c94646ca?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=580&q=80'
-          like="1.292"
-          desc="Kamu memiliki waktu terbatas, sehingga jangan sia-siakan waktu itu untuk menjalani kehidupan orang lain."
 
-        />
-
-
+        <MyGap jarak={20} />
       </ScrollView>
 
     </SafeAreaView>
