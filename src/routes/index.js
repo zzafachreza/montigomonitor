@@ -680,7 +680,23 @@ export default function Router() {
         name="Komentar"
         component={Komentar}
         options={{
-          headerShown: true
+          headerTitle: 'Komentar',
+          headerShown: true,
+
+          cardStyleInterpolator: ({ current, layouts }) => {
+            return {
+              cardStyle: {
+                transform: [
+                  {
+                    translateX: current.progress.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [layouts.screen.width, 0],
+                    }),
+                  },
+                ],
+              },
+            };
+          },
         }}
       />
 

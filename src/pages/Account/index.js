@@ -43,11 +43,10 @@ export default function Account({ navigation, route }) {
 
     getData('user').then(res => {
       setUser(res);
-      console.error(res);
       axios.post(urlAPI + 'posting_data', {
         fid_user: res.id
       }).then(d => {
-        console.log(d.data);
+
         setData(d.data);
       })
 

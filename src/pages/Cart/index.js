@@ -35,17 +35,7 @@ export default function Cart({ navigation }) {
 
   useEffect(() => {
 
-    const unsubscribe = messaging().onMessage(async remoteMessage => {
 
-      const json = JSON.stringify(remoteMessage);
-      const obj = JSON.parse(json);
-      PushNotification.localNotification({
-        /* Android Only Properties */
-        channelId: 'montigomonitor', // (required) channelId, if the channel doesn't exist, notification will not trigger.
-        title: obj.notification.title, // (optional)
-        message: obj.notification.body, // (required)
-      });
-    });
 
 
 
@@ -53,7 +43,7 @@ export default function Cart({ navigation }) {
     if (isFocused) {
       __getTransaction();
     }
-    return unsubscribe;
+
   }, [isFocused]);
 
 

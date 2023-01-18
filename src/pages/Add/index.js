@@ -77,6 +77,8 @@ export default function ({ navigation, route }) {
     const options = {
         includeBase64: true,
         quality: 1,
+        maxWidth: 750,
+        maxHeight: 750
     };
 
     const getCamera = xyz => {

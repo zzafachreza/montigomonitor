@@ -199,78 +199,27 @@ export default function Register({ navigation }) {
 
           <MyGap jarak={10} />
 
-          <View style={{
-            flexDirection: 'row'
-          }}>
-            <View style={{
-              flex: 1,
-            }}>
-              <MyInput
-                editable={false}
-                value={data.tanggal_lahirshow}
-                // onFocus={() => setShow(true)}
-                // onBlur={() => setShow(false)}
-                placeholder="Enter your birthday"
-                label="Birthday"
-                iconname="calendar"
-                onChangeText={value =>
-                  setData({
-                    ...data,
-                    tanggal_lahir: value,
-                  })
-                }
-              />
-            </View>
-            <View style={{
-              justifyContent: 'center',
-              alignItems: 'center',
-              paddingTop: 25,
-            }}>
-              <TouchableOpacity onPress={() => setShow(true)} style={{
-                justifyContent: 'center',
-                backgroundColor: colors.primary,
-                height: 50,
-                width: 50,
-                borderRadius: 10,
-                marginLeft: 10,
-              }}>
-                <Icon type='ionicon' name='calendar' color={colors.white} />
-              </TouchableOpacity>
-            </View>
-          </View>
 
-          {show && <DateTimePicker
-            testID="dateTimePicker"
-            value={data.tanggal_lahirset}
-            mode="date"
+          <MyInput
 
-            onChange={(event, selectedDate) => {
-              moment.locale('fr');
-              setShow(false)
-              console.log(event.type)
-              console.log(moment(event.nativeEvent.timestamp).format('YYYY-MM-DD'));
+            value={data.tanggal_lahir}
+            // onFocus={() => setShow(true)}
+            // onBlur={() => setShow(false)}
+            placeholder="Example : 1995-02-23"
+            label="Enter your birthday (yyyy-mm-dd)"
+            iconname="calendar"
+            maxLength={10}
 
-              if (event.type == "set") {
-                setData({
-                  ...data,
-                  tanggal_lahir: moment(event.nativeEvent.timestamp).format('YYYY-MM-DD'),
-                  tanggal_lahirset: event.nativeEvent.timestamp,
-                  tanggal_lahirshow: moment(event.nativeEvent.timestamp).format('LL', 'id')
-                });
-
-              } else {
-                setData({
-                  ...data,
-                  tanggal_lahirset: new Date(),
-                  tanggal_lahir: moment(new Date()).format('YYYY-MM-DD'),
-                  tanggal_lahirshow: moment(new Date()).format('LL', 'id')
-                });
-
-              }
+            onChangeText={value =>
+              setData({
+                ...data,
+                tanggal_lahir: value,
+              })
+            }
+          />
 
 
-            }}
-          />}
+
 
           <MyGap jarak={10} />
           <MyInput
