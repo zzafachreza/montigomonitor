@@ -731,9 +731,8 @@ export default function Router() {
         name="Akses"
         component={Akses}
         options={({ route, navigation }) => ({
-          title: 'Lacak Resi Pesanan',
           headerTintColor: 'white',
-          headerShown: true,
+          headerShown: false,
           headerStyle: {
             backgroundColor: colors.primary,
             elevation: 0, // remove shadow on Android

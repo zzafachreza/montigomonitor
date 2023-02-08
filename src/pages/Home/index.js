@@ -141,14 +141,16 @@ export default function Home({ navigation }) {
 
         </View>
 
-        {item.tipe == 'Photo' && <View>
+        {item.tipe == 'Photo' && <TouchableOpacity onPress={() => navigation.navigate('Akses', {
+          kode: item.kode
+        })}>
           <Image style={{
             width: windowWidth,
             height: windowWidth / 1.2,
           }} source={{
             uri: item.link
           }} />
-        </View>}
+        </TouchableOpacity>}
 
         {item.tipe == 'Video' && <View>
           <YoutubePlayer

@@ -51,7 +51,7 @@ export default function Register({ navigation }) {
 
   const [data, setData] = useState({
     api_token: api_token,
-    level: 'admin',
+    level: 'user',
     nama_lengkap: '',
     password: '',
     departement: '',
@@ -122,14 +122,14 @@ export default function Register({ navigation }) {
           padding: 10,
         }}>
           <MyGap jarak={10} />
-          <MyPicker label="Level" iconname="list" value={data.level} onValueChange={x => setData({
+          {/* <MyPicker label="Level" iconname="list" value={data.level} onValueChange={x => setData({
             ...data,
             level: x
           })} data={[
             { value: 'admin', label: 'admin' },
             { value: 'super admin', label: 'super admin' },
             { value: 'user', label: 'user' },
-          ]} />
+          ]} /> */}
           <MyGap jarak={10} />
           <MyInput
             label="Name"
@@ -169,7 +169,7 @@ export default function Register({ navigation }) {
           />
 
           <MyGap jarak={10} />
-          <MyInput
+          {/* <MyInput
             label="Departement"
             placeholder="Enter departement"
             iconname="list"
@@ -180,7 +180,7 @@ export default function Register({ navigation }) {
                 departement: value,
               })
             }
-          />
+          /> */}
 
 
           <MyGap jarak={10} />

@@ -42,7 +42,17 @@ export default function Account({ navigation, route }) {
   const getPosting = () => {
 
     getData('user').then(res => {
-      setUser(res);
+      // setUser(res);
+
+      axios.post(urlAPI + 'get_user', {
+        id: res.id
+      }).then(z => {
+        console.log(z.data)
+
+        setUser(z.data.data);
+        storeData('user', z.data.data)
+      })
+
       axios.post(urlAPI + 'posting_data', {
         fid_user: res.id
       }).then(d => {

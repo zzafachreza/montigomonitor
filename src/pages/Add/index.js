@@ -43,6 +43,7 @@ export default function ({ navigation, route }) {
 
 
     const user = route.params;
+    const [foto, setFoto] = useState([]);
     const [data, setData] = useState([]);
     const [kirim, setKirim] = useState({
         fid_user: route.params.id,
@@ -53,19 +54,37 @@ export default function ({ navigation, route }) {
 
     const [loading, setLoading] = useState(false);
     const __sendServer = () => {
-        setLoading(true);
-        console.log(kirim);
+        console.log();
 
-        axios.post(urlAPI + 'posting', kirim).then(res => {
-            setLoading(false);
-            console.log(res.data);
+        if (kirim.tipe == 'Photo' && foto.length == 0) {
             showMessage({
-                type: 'success',
-                message: res.data.message
+                type: 'danger',
+                message: 'Please upload at least 1 photo'
+            })
 
-            });
-            navigation.replace('MainApp');
-        })
+        } else {
+            // setLoading(true);
+            console.log(kirim);
+
+            axios.post(urlAPI + 'posting', {
+                fid_user: route.params.id,
+                desc: kirim.desc,
+                link: kirim.link,
+                tipe: kirim.tipe,
+                foto: foto
+
+            }).then(res => {
+                setLoading(false);
+                console.log(res.data);
+                showMessage({
+                    type: 'success',
+                    message: res.data.message
+                });
+                navigation.replace('MainApp');
+            })
+        }
+
+
 
 
     }
@@ -77,8 +96,8 @@ export default function ({ navigation, route }) {
     const options = {
         includeBase64: true,
         quality: 1,
-        maxWidth: 750,
-        maxHeight: 750
+        maxWidth: 1200,
+        maxHeight: 1200
     };
 
     const getCamera = xyz => {
@@ -92,10 +111,12 @@ export default function ({ navigation, route }) {
                 let source = { uri: response.uri };
                 switch (xyz) {
                     case 1:
-                        setKirim({
-                            ...kirim,
-                            link: `data:${response.type};base64, ${response.base64}`,
-                        });
+                        // setKirim({
+                        //     ...kirim,
+                        //     link: `data:${response.type};base64, ${response.base64}`,
+                        // });
+                        // setLink(`data:${response.type};base64, ${response.base64}`);
+                        setFoto([...foto, `data:${response.type};base64, ${response.base64}`]);
 
                         break;
                 }
@@ -115,11 +136,14 @@ export default function ({ navigation, route }) {
                 let source = { uri: response.uri };
                 switch (xyz) {
                     case 1:
-                        setKirim({
-                            ...kirim,
-                            link: `data:${response.type};base64, ${response.base64}`,
-                        });
+                        // setKirim({
+                        //     ...kirim,
+                        //     link: `data:${response.type};base64, ${response.base64}`,
+                        // });
 
+                        // setLink(`data:${response.type};base64, ${response.base64}`);
+
+                        setFoto([...foto, `data:${response.type};base64, ${response.base64}`]);
                         break;
                 }
             }
@@ -128,50 +152,55 @@ export default function ({ navigation, route }) {
 
     const UploadFoto = ({ onPress1, onPress2, label, foto }) => {
         return (
-            <View
-                style={{
-                    borderWidth: 1,
-                    borderColor: colors.zavalabs,
-                    // borderRadius: 10,
-                    justifyContent: 'center',
-                    overflow: 'hidden',
-                    alignItems: 'center'
-                }}>
+            <TouchableOpacity onPress={() => {
 
-                <TouchableOpacity onPress={() => {
+                Alert.alert(MYAPP, 'Chose Upload your image from..', [
+                    {
+                        text: 'CANCEL',
 
-                    Alert.alert(MYAPP, 'Chose Upload your image from..', [
-                        {
-                            text: 'CANCEL',
+                    },
+                    {
+                        text: 'CAMERA',
+                        onPress: onPress1
+                    },
+                    {
+                        text: 'GALLERY',
+                        onPress: onPress2
+                    }
+                ])
 
-                        },
-                        {
-                            text: 'CAMERA',
-                            onPress: onPress1
-                        },
-                        {
-                            text: 'GALLERY',
-                            onPress: onPress2
-                        }
-                    ])
+            }}>
+                <View
+                    style={{
+                        borderWidth: 1,
+                        borderColor: colors.zavalabs,
+                        // borderRadius: 10,
+                        justifyContent: 'center',
+                        overflow: 'hidden',
+                        alignItems: 'center'
+                    }}>
 
-                }}>
+
                     <Image
+                        key={0}
                         source={{
-                            uri: foto,
+                            uri: 'https://zavalabs.com/nogambar.jpg',
                         }}
                         style={{
-                            width: windowWidth,
-                            height: windowWidth / 1.2,
+                            width: 100,
+                            height: 100,
                         }}
                         resizeMode="contain"
                     />
-                </TouchableOpacity>
 
 
-            </View>
+
+                </View>
+            </TouchableOpacity>
         );
     };
+
+    const [desc, setDesc] = useState('');
 
     useEffect(() => {
         requestCameraPermission();
@@ -195,11 +224,13 @@ export default function ({ navigation, route }) {
                         { value: 'Video', label: 'Video' }
                     ]} />
                     <MyGap jarak={10} />
-                    <MyInput value={kirim.desc} onChangeText={x => {
+                    <MyInput onChangeText={x => {
                         setKirim({
                             ...kirim,
                             desc: x
                         })
+                        // setDesc(x)
+
                     }} label="Enter Description your post" placeholder="input your description here..." multiline iconname="create" />
 
                     <MyGap jarak={10} />
@@ -212,11 +243,83 @@ export default function ({ navigation, route }) {
                     }} label="Enter your video link" placeholder="HTzMx24boDY" iconname="logo-youtube" />
                     }
 
-                    {kirim.tipe === 'Photo' && <UploadFoto
-                        onPress1={() => getCamera(1)}
-                        onPress2={() => getGallery(1)}
-                        foto={kirim.link}
-                    />}
+                    {kirim.tipe === 'Photo' &&
+
+                        <ScrollView horizontal>
+                            {foto.map(i => {
+                                return (
+                                    <View style={{
+                                        margin: 2,
+                                    }}>
+                                        <Image source={{
+                                            uri: i
+                                        }} style={{
+                                            width: 80,
+                                            height: 80,
+                                        }} />
+                                        <TouchableOpacity onPress={() => {
+                                            console.log(i);
+                                            let deleted = foto.filter(x => x !== i);
+                                            setFoto(deleted);
+                                        }} style={{
+                                            backgroundColor: colors.danger,
+                                            flexDirection: 'row',
+                                            justifyContent: 'center',
+                                            alignItems: 'center'
+                                        }}>
+                                            <Icon color={colors.white} type='ionicon' name='trash' size={12} />
+                                            <Text style={{
+                                                fontFamily: fonts.secondary[400],
+                                                color: colors.white
+                                            }}>Delete</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                )
+                            })}
+                            <TouchableOpacity onPress={() => {
+
+                                Alert.alert(MYAPP, 'Chose Upload your image from..', [
+                                    {
+                                        text: 'CANCEL',
+
+                                    },
+                                    {
+                                        text: 'CAMERA',
+                                        onPress: () => getCamera(1)
+                                    },
+                                    {
+                                        text: 'GALLERY',
+                                        onPress: () => getGallery(1)
+                                    }
+                                ])
+
+                            }} style={{
+                                margin: 2,
+                            }}>
+                                <Image source={{
+                                    uri: 'https://zavalabs.com/nogambar.jpg'
+                                }} style={{
+                                    width: 80,
+                                    height: 80,
+                                }} />
+                                <View onPress={() => { }} style={{
+                                    backgroundColor: colors.border,
+                                    flexDirection: 'row',
+                                    justifyContent: 'center',
+                                    alignItems: 'center'
+                                }}>
+                                    <Icon color={colors.white} type='ionicon' name='add' size={12} />
+                                    <Text style={{
+                                        fontFamily: fonts.secondary[400],
+                                        color: colors.white
+                                    }}>Add Photo</Text>
+                                </View>
+                            </TouchableOpacity>
+
+                        </ScrollView>
+
+                    }
+
 
 
 
@@ -224,6 +327,9 @@ export default function ({ navigation, route }) {
                     <MyGap jarak={10} />
                     {!loading && <MyButton onPress={__sendServer} title="Upload your post" Icons="cloud-upload-outline" warna={colors.primary} />}
                     {loading && <ActivityIndicator color={colors.primary} size="large" />}
+
+
+
 
                 </SafeAreaView >
             </ScrollView>
