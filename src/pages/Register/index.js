@@ -49,6 +49,8 @@ export default function Register({ navigation }) {
     }
   };
 
+  const [cek, setCek] = useState(false);
+
   const [data, setData] = useState({
     api_token: api_token,
     level: 'user',
@@ -65,8 +67,12 @@ export default function Register({ navigation }) {
   });
 
   const simpan = () => {
-
-    if (data.nama_lengkap.length === 0) {
+    if (!cek) {
+      showMessage({
+        message: 'you must checking the box',
+      });
+    }
+    else if (data.nama_lengkap.length === 0) {
       showMessage({
         message: 'Name must not be empty',
       });
@@ -130,7 +136,7 @@ export default function Register({ navigation }) {
             { value: 'super admin', label: 'super admin' },
             { value: 'user', label: 'user' },
           ]} /> */}
-          <MyGap jarak={10} />
+          <MyGap jarak={5} />
           <MyInput
             label="Name"
             iconname="person"
@@ -153,7 +159,7 @@ export default function Register({ navigation }) {
 
 
 
-          <MyGap jarak={10} />
+          <MyGap jarak={5} />
           <MyInput
             label="Password"
             iconname="key"
@@ -168,7 +174,7 @@ export default function Register({ navigation }) {
             }
           />
 
-          <MyGap jarak={10} />
+          <MyGap jarak={5} />
           {/* <MyInput
             label="Departement"
             placeholder="Enter departement"
@@ -183,7 +189,7 @@ export default function Register({ navigation }) {
           /> */}
 
 
-          <MyGap jarak={10} />
+          <MyGap jarak={5} />
           <MyInput
             label="Barcode"
             iconname="barcode"
@@ -197,7 +203,7 @@ export default function Register({ navigation }) {
             }
           />
 
-          <MyGap jarak={10} />
+          <MyGap jarak={5} />
 
 
           <MyInput
@@ -221,7 +227,7 @@ export default function Register({ navigation }) {
 
 
 
-          <MyGap jarak={10} />
+          <MyGap jarak={5} />
           <MyInput
             ref={inputRef}
             label="Email"
@@ -235,7 +241,7 @@ export default function Register({ navigation }) {
               })
             }
           />
-          <MyGap jarak={10} />
+          <MyGap jarak={5} />
           <MyInput
             label="Phone No"
             iconname="call"
@@ -252,7 +258,33 @@ export default function Register({ navigation }) {
 
 
 
-          <MyGap jarak={20} />
+          <MyGap jarak={5} />
+
+          <TouchableOpacity onPress={() => {
+            cek ? setCek(false) : setCek(true);
+          }} style={{
+            flexDirection: 'row',
+            padding: 5,
+            marginVertical: 5,
+            alignItems: 'center'
+          }}>
+            <View style={{
+              marginRight: 5,
+              borderWidth: 1,
+              backgroundColor: colors.white,
+              borderRadius: 5,
+            }}>
+              <Icon type='ionicon' name='checkmark' color={cek ? colors.black : colors.white} size={windowWidth / 30} />
+            </View>
+            <Text style={{
+              fontFamily: fonts.secondary[400],
+              fontSize: windowWidth / 35
+            }}>By checking this box, you are agreeing to  <Text style={{
+              fontFamily: fonts.secondary[400],
+              fontSize: windowWidth / 35,
+              color: colors.primary,
+            }}>our terms of service</Text></Text>
+          </TouchableOpacity>
 
           <MyButton
             warna={colors.primary}
